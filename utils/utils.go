@@ -72,3 +72,48 @@ func CheckPassword(password string) (bool, *errno.ErrNo) {
 	}
 	return true, nil
 }
+
+type TrieNode struct {
+	children map[rune]*TrieNode
+	isEnd    bool
+}
+
+func NewTrieNode() *TrieNode {
+	return &TrieNode{
+		children: make(map[rune]*TrieNode),
+		isEnd:    false,
+	}
+}
+
+func InsertWord(root *TrieNode, word string) {
+	node := root
+	for _, ch := range word {
+		if _, ok := node.children[ch]; !ok {
+			node.children[ch] = NewTrieNode()
+		}
+		node = node.children[ch]
+	}
+	node.isEnd = true
+}
+
+func SearchText(root *TrieNode, text string) bool {
+	node := root
+	for _, ch := range text {
+		if _, ok := node.children[ch]; !ok {
+			return false
+		}
+		node = node.children[ch]
+		if node.isEnd {
+			return true
+		}
+	}
+	return false
+}
+
+func SensitiveWordDetection(sensitiveWords []string, text string) bool {
+	root := NewTrieNode()
+	for _, word := range sensitiveWords {
+		InsertWord(root, word)
+	}
+	return SearchText(root, text)
+}

@@ -432,6 +432,17 @@ func CommentActionHandler(ctx context.Context, c *app.RequestContext) {
 	CommentActionVar.ActionType = int32(actionType)
 	CommentActionVar.CommentText = c.Query("comment_text")
 
+	sensitiveWords := []string{"bad", "evil", "dangerous"}
+
+	// 敏感词检测
+	if utils.SensitiveWordDetection(sensitiveWords, CommentActionVar.CommentText) {
+		SendCommentActionResponse(c, comment.CommentActionResponse{
+			StatusCode: errno.ParamErrCode,
+			StatusMsg:  errno.ParamErrMsg,
+		})
+		return
+	}
+
 	resp, err := rpc.CommentAction(ctx, &comment.CommentActionRequest{
 		UserId:      CommentActionVar.UserId,
 		VideoId:     CommentActionVar.VideoId,
