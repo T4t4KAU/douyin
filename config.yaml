@@ -1,0 +1,43 @@
+MySQLDSN: "douyin:123456@tcp(127.0.0.1:3306)/douyin?charset=utf8&parseTime=true"
+RedisAddr: "127.0.0.1:6379"
+RedisPassword: ""
+EtcdAddress: "127.0.0.1:9379"
+MinioEndPoint: "192.168.43.18:18001"
+MinioAccessKeyID: "minio"
+MinioAccessSecretKey: "12345678"
+
+SecretKey: "tiktok"
+IdentityKey: "user_id"
+
+VideoFeedCount: 30
+UserNameMaxLen: 32
+PassWordMaxLen: 32
+PasswordMinLen: 5
+
+UserTableName: "users"
+RelationTableName: "relations"
+MessageTableName: "messages"
+PublishTableName: "videos"
+FavoriteTableName: "favorites"
+CommentTableName: "comments"
+
+MinioVideoBucketName: "videos"
+MinioImageBucketName: "images"
+MinioAvatarBucketName: "avatars"
+MinioBackgroundBucketName: "backgrounds"
+
+UserServiceName: "user"
+RelationServiceName: "relation"
+PublishServiceName: "publish"
+MessageServiceName: "message"
+FavoriteServiceName: "favorite"
+CommentServiceName: "comment"
+FeedServiceName: "feed"
+ApiServiceName: "api"
+
+LimitsPerSecond: 100
+
+TestAva: "test.jpg"
+TestBackground: "test.jpg"
+
+RabbitMqURI: "amqp://douyin:123456@127.0.0.1:5672/"

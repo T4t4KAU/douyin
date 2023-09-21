@@ -1,0 +1,75 @@
+version: '3'
+
+services:
+  mysql:
+    image: 'mysql:latest'
+    container_name: mysql
+    volumes:
+      - ./pkg/configs/sql:/docker-entrypoint-initdb.d
+    ports:
+      - "3306:3306"
+    environment:
+      - MYSQL_DATABASE=douyin
+      - MYSQL_USER=douyin
+      - MYSQL_PASSWORD=123456
+      - MYSQL_RANDOM_ROOT_PASSWORD="yes"
+    restart: always
+
+  minio:
+    image: minio/minio
+    container_name: minio
+    ports:
+      - "18001:9000"
+      - "18002:9001"
+    environment:
+      MINIO_ACCESS_KEY: minio
+      MINIO_SECRET_KEY: 12345678
+    volumes:
+      - ./pkg/data/minio/:/data
+      - ./pkg/configs/minio/:/root/.minio
+    command: server --console-address ':9001' /data
+    privileged: true
+    restart: always
+
+  redis:
+    image: redis:latest
+    container_name: redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - ./pkg/configs/redis/redis.conf:/usr/local/etc/redis/redis.conf
+      - ./pkg/data/redis/:/data
+    command: redis-server /usr/local/etc/redis/redis.conf
+    restart: always
+
+  Etcd:
+    image: "quay.io/coreos/etcd:v3.5.5"
+    container_name: etcd
+    environment:
+      - ETCD_LISTEN_CLIENT_URLS=http://0.0.0.0:2379
+      - ETCD_ADVERTISE_CLIENT_URLS=http://0.0.0.0:2379
+      - ETCDCTL_API=3
+    ports:
+      - "9379:2379"
+  jaeger:
+    image: jaegertracing/all-in-one:latest
+    container_name: jaeger
+    ports:
+      - "6831:6831/udp"
+      - "16686:16686"
+
+  rabbitMQ:
+    image: rabbitmq:management
+    container_name: rabbitMQ
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    volumes:
+        - ./pkg/data/rabbitmq/lib:/var/lib/rabbitmq
+        - ./pkg/data/rabbitmq/log:/var/log/rabbitmq
+    environment:
+      - RABBITMQ_DEFAULT_USER=douyin
+      - RABBITMQ_DEFAULT_PASS=123456
+    restart: always
+
+
